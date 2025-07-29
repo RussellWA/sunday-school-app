@@ -16,7 +16,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     const handleSignUp = async () => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            // navigation.replace("Home");
+            navigation.replace("Home");
         } catch (err: any) {
             setError(err.message);
         }
@@ -40,6 +40,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 autoCapitalize="none"
                 secureTextEntry
             />
+
+            <Text variant="titleSmall">{error}</Text>
 
             <Button mode="contained" onPress={handleSignUp}>
                 Login

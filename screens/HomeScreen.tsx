@@ -7,6 +7,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import useHomeHandler from "../handler/useHomeHandler";
 import { ScrollView } from "react-native-gesture-handler";
+import ExpandableCard from "../components/ExpandableCard";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Home">;
 
@@ -15,16 +16,23 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         userInfo,
         loading,
         children,
-        fetchUser,
+        authChecked,
         fetchChildren
     } = useHomeHandler();
 
     useEffect(() => {
-        fetchUser();
-        fetchChildren();
-    }, []);
+        if (loading) return;
+        if (userInfo) fetchChildren();
+        else navigation.replace("Login");
+    }, [loading, userInfo]);
 
-    if (loading) return <ActivityIndicator style={{ marginTop: 40 }} />;
+    if (!authChecked) {
+        return (
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <ActivityIndicator size="large" />
+            </View>
+        );
+    }
 
     return (
         <ScrollView>
@@ -36,19 +44,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
                 <Text>No Children Registered Yet</Text>
                 ) : (
                     children.map(child => (
-                        <View
-                            key={child.id}
-                            style={{
-                            padding: 16,
-                            borderWidth: 1,
-                            borderRadius: 10,
-                            marginBottom: 12,
-                            backgroundColor: "#f0f0f0",
-                            }}
-                        >
-                            <Text style={{ fontSize: 18 }}>{child.fullName}</Text>
-                            <Text style={{ color: "#555" }}>DOB: {child.dob}</Text>
-                        </View>
+                        <ExpandableCard key={child.id} child={child}/>
                     ))
                 )
             }

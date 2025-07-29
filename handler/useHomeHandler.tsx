@@ -1,42 +1,30 @@
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { auth, db } from "../firebaseConfig";
-
-export interface UserInfo {
-    email: string;
-    fullName: string;
-    role: "parent" | "child" | string;
-    createdAt: string;
-    phone?: string;
-}
-
-export interface Child {
-    id: string;
-    fullName: string;
-    dob: string;
-};
+import { Child } from "../types/Child";
+import { onAuthStateChanged } from "firebase/auth";
+import { UserInfo } from "../types/User";
 
 const useHomeHandler = () => {
     const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
     const [loading, setLoading] = useState(true);
     const [children, setChildren] = useState<Child[]>([]);
+    const [authChecked, setAuthChecked] = useState(false);
 
-    const fetchUser = async () => {
-        setLoading(true);
-        const user = auth.currentUser;
-        try {
-            if (!user) return;
-            const docRef = doc(db, "users", user.uid);
-            const docSnap = await getDoc(docRef);
-
-            if (docSnap.exists()) setUserInfo(docSnap.data() as UserInfo);
-            
-        } catch (e) {
-            console.error("Failed to fetch user!");
-        } finally {
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) setUserInfo(docSnap.data() as UserInfo);
+            }
+            else setUserInfo(null);
+            setAuthChecked(true);
             setLoading(false);
-        }
-    };
+        });
+
+        return () => unsubscribe();
+    }, []);
 
     const fetchChildren = async () => {
         setLoading(true);
@@ -63,7 +51,7 @@ const useHomeHandler = () => {
         userInfo,
         loading,
         children,
-        fetchUser,
+        authChecked,
         fetchChildren
     }
 };

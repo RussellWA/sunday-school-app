@@ -7,6 +7,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import DateOfBirthInput from "../components/DateOfBirthInput";
 import { getClassFromDOB } from "../utils/getClassFromDOB";
+import { format } from "date-fns";
 
 type Props = NativeStackScreenProps<RootStackParamList, "AddChildren">;
 
@@ -32,10 +33,10 @@ const AddChildrenScreen: React.FC<Props> = ({ navigation }) => {
 
             await addDoc(collection(db, "children"), {
                 fullName,
-                dob,
+                dob: format(dob, "dd-MM-yyyy"),
                 parentId: user.uid,
                 points: 0,
-                class: assignedClass,
+                className: assignedClass,
                 createdAt: new Date().toISOString(),
             });
 

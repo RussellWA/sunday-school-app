@@ -21,7 +21,6 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
-    // <PaperProvider>
 	<GestureHandlerRootView style={{ flex: 1 }}>
 		<NavigationContainer>
 			<Stack.Navigator initialRouteName="Home">

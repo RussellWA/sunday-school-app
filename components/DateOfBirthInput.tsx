@@ -24,11 +24,11 @@ export default function DateOfBirthInput({ onChange }: { onChange: (date: string
 
         {show && (
             <DateTimePicker
-            value={date}
-            mode="date"
-            display={Platform.OS === "ios" ? "spinner" : "default"}
-            onChange={onChangeDate}
-            maximumDate={new Date()} 
+                value={date}
+                mode="date"
+                display={Platform.OS === "ios" ? "spinner" : "default"}
+                onChange={onChangeDate}
+                maximumDate={new Date()} 
             />
         )}
     </View>

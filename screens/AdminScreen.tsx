@@ -9,7 +9,7 @@ import useHomeHandler from "../handler/useHomeHandler";
 import { ScrollView } from "react-native-gesture-handler";
 import ExpandableCard from "../components/ExpandableCard";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Home">;
+type Props = NativeStackScreenProps<RootStackParamList, "Admin">;
 
 const AdminScreen: React.FC<Props> = ({ navigation }) => {
 

@@ -17,7 +17,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         loading,
         children,
         authChecked,
-        fetchChildren
+        fetchChildren,
     } = useHomeHandler();
 
     useEffect(() => {

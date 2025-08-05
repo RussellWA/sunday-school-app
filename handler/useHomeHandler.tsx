@@ -10,6 +10,7 @@ const useHomeHandler = () => {
     const [loading, setLoading] = useState(true);
     const [children, setChildren] = useState<Child[]>([]);
     const [authChecked, setAuthChecked] = useState(false);
+    
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {

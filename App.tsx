@@ -9,6 +9,7 @@ import HomeScreen from "./screens/HomeScreen";
 import AddChildrenScreen from "./screens/AddChildScreen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AdminScreen from "./screens/AdminScreen";
+import WelcomeScreen from "./screens/WelcomeScreen";
 
 export type RootStackParamList = {
 	Login: undefined;
@@ -16,7 +17,8 @@ export type RootStackParamList = {
 	Home: undefined;
 	CompleteProfile: undefined;
 	AddChildren: undefined;
-	Admin: undefined; // <-- Add this line
+	Admin: undefined;
+	Welcome: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -25,7 +27,8 @@ export default function App() {
   return (
 	<GestureHandlerRootView style={{ flex: 1 }}>
 		<NavigationContainer>
-			<Stack.Navigator initialRouteName="Home">
+			<Stack.Navigator initialRouteName="Home" screenOptions={{headerShown: false }}> 
+				<Stack.Screen name="Welcome" component={WelcomeScreen}/>
 				<Stack.Screen name="Login" component={LoginScreen}/>
 				<Stack.Screen name="SignUp" component={SignUpScreen}/>
 				<Stack.Screen name="CompleteProfile" component={CompleteProfileScreen}/>

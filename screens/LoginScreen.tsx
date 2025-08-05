@@ -5,6 +5,8 @@ import { View } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import { Button, Text, TextInput } from 'react-native-paper';
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebaseConfig";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
@@ -15,8 +17,22 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
     const handleSignUp = async () => {
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            navigation.replace("Home");
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            // Fetch user document to get role
+            const docRef = doc(db, "users", user.uid);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                const data = docSnap.data() as { role?: string };
+                console.log("User role:", data.role); // <-- Add this line
+                if (data.role === "admin") {
+                    navigation.replace("Admin");
+                } else {
+                    navigation.replace("Home");
+                }
+            } else {
+                setError("User data not found.");
+            }
         } catch (err: any) {
             setError(err.message);
         }

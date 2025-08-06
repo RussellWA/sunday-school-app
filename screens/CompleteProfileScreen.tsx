@@ -1,14 +1,15 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
-import { View } from "react-native";
-import { Button, RadioButton, Text, TextInput } from 'react-native-paper';
+import { TouchableOpacity, View, Image } from "react-native";
+import { Button, RadioButton, Text, TextInput, useTheme } from 'react-native-paper';
 import { RootStackParamList } from "../App";
 import { auth, db } from "../firebaseConfig";
 
 type Props = NativeStackScreenProps<RootStackParamList, "CompleteProfile">;
 
 const CompleteProfileScreen: React.FC<Props> = ({ navigation }) => {
+    const { colors } = useTheme();
     const [fullName, setFullName] = useState("");
     const [parent, setParent] = useState("");
     const [phone, setPhone] = useState("");
@@ -44,44 +45,110 @@ const CompleteProfileScreen: React.FC<Props> = ({ navigation }) => {
 
     return (
         <View style={{ flex: 1, justifyContent: "center", padding: 20 }}>
-            <Text variant="titleLarge">Create Account</Text>
+            <TouchableOpacity
+                onPress={() => navigation.goBack()}
+                style={{
+                    position: "absolute",
+                    top: 50,
+                    left: 16,
+                    zIndex: 1,
+                    width: 40,
+                    height: 40,
+                    borderRadius: 20,
+                    backgroundColor: "#fff",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 2,
+                    elevation: 3,
+                    borderWidth: 1,
+                    borderColor: "#eee",
+                }}
+            >
+                <Text style={{ fontSize: 18, color: colors.primary }}>{'<'}</Text>
+            </TouchableOpacity>
+            <View style={{ alignItems: "center", marginBottom: 40 }}>
+                <Image
+                    source={require("../assets/logo_kids.png")}
+                    style={{ width: 200, height: 160 }}
+                    resizeMode="contain"
+                />
+                <Text style={{ fontSize: 24, fontWeight: "bold", marginTop: 16 }}>Create Account</Text>
+            </View>
 
             <TextInput
-                label="Full Name"
+                placeholder="Full Name"
+                placeholderTextColor="#999"
                 value={fullName}
-                onChangeText={text => setFullName(text)}
+                onChangeText={setFullName}
+                keyboardType="default"
+                autoCapitalize="words"
+                style={{
+                    borderWidth: 1,
+                    borderColor: "#ccc",
+                    borderRadius: 8,
+                    marginBottom: 16,
+                }}
             />
 
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
+                <TouchableOpacity
+                style={{ flexDirection: "row", alignItems: "center", marginRight: 24 }}
+                onPress={() => setParent("father")}
+                >
                 <RadioButton
                     value="father"
                     status={parent === "father" ? "checked" : "unchecked"}
                     onPress={() => setParent("father")}
+                    color={colors.primary}
                 />
                 <Text>Father</Text>
+                </TouchableOpacity>
 
+                <TouchableOpacity
+                style={{ flexDirection: "row", alignItems: "center" }}
+                onPress={() => setParent("mother")}
+                >
                 <RadioButton
                     value="mother"
                     status={parent === "mother" ? "checked" : "unchecked"}
                     onPress={() => setParent("mother")}
+                    color={colors.primary}
                 />
                 <Text>Mother</Text>
+                </TouchableOpacity>
             </View>
 
             <TextInput
-                label="Phone"
+                placeholder="Phone"
+                placeholderTextColor="#999"
                 keyboardType="phone-pad"
-                autoComplete="tel"
                 value={phone}
-                onChangeText={text => setPhone(text)}
+                onChangeText={setPhone}
+                style={{
+                    borderWidth: 1,
+                    borderColor: "#ccc",
+                    borderRadius: 8,
+                }}
             />
 
             <Text variant="titleSmall">{error}</Text>
 
-            <Button mode="contained" onPress={handleCompletion}>
-                Submit
-            </Button>
-
+            <TouchableOpacity
+                onPress={handleCompletion}
+                style={{
+                backgroundColor: colors.primary,
+                paddingVertical: 14,
+                borderRadius: 8,
+                marginBottom: 16,
+                }}
+            >
+                <Text style={{ color: colors.onPrimary, textAlign: "center", fontWeight: "bold" }}>
+                    Submit
+                </Text>
+            </TouchableOpacity>
         </View>
     );
 };

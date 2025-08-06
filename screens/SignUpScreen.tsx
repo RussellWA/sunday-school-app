@@ -3,13 +3,14 @@ import { RootStackParamList } from "../App";
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../firebaseConfig";
-import { View } from "react-native";
-import { Button, Text, TextInput } from 'react-native-paper';
+import { View, Image, TouchableOpacity } from "react-native";
+import { Button, Text, TextInput, useTheme } from 'react-native-paper';
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 type Props = NativeStackScreenProps<RootStackParamList, "SignUp">;
 
 const SignUpScreen: React.FC<Props> = ({ navigation }) => {
+    const { colors } = useTheme();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirm, setConfirm] = useState("");
@@ -46,35 +47,98 @@ const SignUpScreen: React.FC<Props> = ({ navigation }) => {
     };
 
     return (
-        <View style={{ flex: 1, justifyContent: "center", padding: 20 }}>
-            <Text variant="titleLarge">Create Account</Text>
+        <View style={{ flex: 1, justifyContent: "center", paddingHorizontal: 24, backgroundColor: "#fff" }}>
+            <TouchableOpacity
+                onPress={() => navigation.goBack()}
+                style={{
+                    position: "absolute",
+                    top: 50,
+                    left: 16,
+                    zIndex: 1,
+                    width: 40,
+                    height: 40,
+                    borderRadius: 20,
+                    backgroundColor: "#fff",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 2,
+                    elevation: 3,
+                    borderWidth: 1,
+                    borderColor: "#eee",
+                }}
+            >
+                <Text style={{ fontSize: 18, color: colors.primary }}>{'<'}</Text>
+            </TouchableOpacity>
+            <View style={{ alignItems: "center", marginBottom: 40 }}>
+                <Image
+                    source={require("../assets/logo_kids.png")}
+                    style={{ width: 200, height: 160 }}
+                    resizeMode="contain"
+                />
+                <Text style={{ fontSize: 24, fontWeight: "bold", marginTop: 16 }}>Create Account</Text>
+            </View>
 
             <TextInput
-                label="Email"
+                placeholder="Email"
+                placeholderTextColor="#999"
                 value={email}
-                onChangeText={text => setEmail(text)}
+                onChangeText={setEmail}
+                keyboardType="email-address"
                 autoCapitalize="none"
+                style={{
+                    borderWidth: 1,
+                    borderColor: "#ccc",
+                    borderRadius: 8,
+                    marginBottom: 16,
+                }}
             />
 
             <TextInput
-                label="Password"
+                placeholder="Password"
+                placeholderTextColor="#999"
                 value={password}
-                onChangeText={text => setPassword(text)}
-                autoCapitalize="none"
+                onChangeText={setPassword}
+                secureTextEntry
+                style={{
+                    borderWidth: 1,
+                    borderColor: "#ccc",
+                    borderRadius: 8,
+                    marginBottom: 24,
+                }}
             />
 
             <TextInput
-                label="Confirm Password"
+                placeholder="Confirm Password"
+                placeholderTextColor="#999"
                 value={confirm}
-                onChangeText={text => setConfirm(text)}
-                autoCapitalize="none"
+                onChangeText={setConfirm}
+                secureTextEntry
+                style={{
+                    borderWidth: 1,
+                    borderColor: "#ccc",
+                    borderRadius: 8,
+                    marginBottom: 24,
+                }}
             />
 
             <Text variant="titleSmall">{error}</Text>
 
-            <Button mode="contained" onPress={handleSignUp}>
-                Sign Up
-            </Button>
+            <TouchableOpacity
+                onPress={handleSignUp}
+                style={{
+                backgroundColor: colors.primary,
+                paddingVertical: 14,
+                borderRadius: 8,
+                marginBottom: 16,
+                }}
+            >
+                <Text style={{ color: colors.onPrimary, textAlign: "center", fontWeight: "bold" }}>
+                    Create Account
+                </Text>
+            </TouchableOpacity>
 
 
             <Text

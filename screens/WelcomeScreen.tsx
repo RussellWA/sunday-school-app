@@ -53,7 +53,7 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
                     }}
                 >
                     <Text style={{ color: colors.onPrimary, textAlign: "center", fontWeight: "bold", fontSize: 18 }}>
-                    Login
+                        Login
                     </Text>
                 </TouchableOpacity>
 
@@ -70,7 +70,7 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
                     }}
                 >
                     <Text style={{ color: colors.primary, textAlign: "center", fontWeight: "bold", fontSize: 18 }}>
-                    Sign Up
+                        Create Account
                     </Text>
                 </TouchableOpacity>
             </View>

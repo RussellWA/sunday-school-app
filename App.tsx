@@ -11,6 +11,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AdminScreen from "./screens/AdminScreen";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import { theme } from "./types/Theme";
+import ScannerScreen from "./screens/ScannerScreen";
 
 export type RootStackParamList = {
 	Login: undefined;
@@ -20,6 +21,7 @@ export type RootStackParamList = {
 	AddChildren: undefined;
 	Admin: undefined;
 	Welcome: undefined;
+	Scanner: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -37,6 +39,7 @@ export default function App() {
 					<Stack.Screen name="Home" component={HomeScreen}/>
 					<Stack.Screen name="AddChildren" component={AddChildrenScreen}/>
 					<Stack.Screen name="Admin" component={AdminScreen}/>
+					<Stack.Screen name="Scanner" component={ScannerScreen} />
 				</Stack.Navigator>
 			</NavigationContainer>
 		</PaperProvider>

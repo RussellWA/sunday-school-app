@@ -1,13 +1,11 @@
-import { useEffect, useState } from "react";
-import { auth, db } from "../firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
-import { View } from "react-native";
-import { ActivityIndicator, Button, Text } from "react-native-paper";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../App";
-import useHomeHandler from "../handler/useHomeHandler";
+import { useEffect } from "react";
+import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { ActivityIndicator, Button, Text } from "react-native-paper";
+import { RootStackParamList } from "../App";
 import ExpandableCard from "../components/ExpandableCard";
+import useHomeHandler from "../handler/useHomeHandler";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Home">;
 
@@ -23,7 +21,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     useEffect(() => {
         if (loading) return;
         if (userInfo) fetchChildren();
-        else navigation.replace("Login");
+        else navigation.replace("Welcome");
     }, [loading, userInfo]);
 
     if (!authChecked) {

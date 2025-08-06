@@ -9,6 +9,8 @@ import HomeScreen from "./screens/HomeScreen";
 import AddChildrenScreen from "./screens/AddChildScreen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AdminScreen from "./screens/AdminScreen";
+import WelcomeScreen from "./screens/WelcomeScreen";
+import { theme } from "./types/Theme";
 
 export type RootStackParamList = {
 	Login: undefined;
@@ -16,7 +18,8 @@ export type RootStackParamList = {
 	Home: undefined;
 	CompleteProfile: undefined;
 	AddChildren: undefined;
-	Admin: undefined; // <-- Add this line
+	Admin: undefined;
+	Welcome: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -24,16 +27,19 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function App() {
   return (
 	<GestureHandlerRootView style={{ flex: 1 }}>
-		<NavigationContainer>
-			<Stack.Navigator initialRouteName="Home">
-				<Stack.Screen name="Login" component={LoginScreen}/>
-				<Stack.Screen name="SignUp" component={SignUpScreen}/>
-				<Stack.Screen name="CompleteProfile" component={CompleteProfileScreen}/>
-				<Stack.Screen name="Home" component={HomeScreen}/>
-				<Stack.Screen name="AddChildren" component={AddChildrenScreen}/>
-				<Stack.Screen name="Admin" component={AdminScreen}/>
-			</Stack.Navigator>
-		</NavigationContainer>
+		<PaperProvider theme={theme}>
+			<NavigationContainer>
+				<Stack.Navigator initialRouteName="Welcome" screenOptions={{headerShown: false }}> 
+					<Stack.Screen name="Welcome" component={WelcomeScreen}/>
+					<Stack.Screen name="Login" component={LoginScreen}/>
+					<Stack.Screen name="SignUp" component={SignUpScreen}/>
+					<Stack.Screen name="CompleteProfile" component={CompleteProfileScreen}/>
+					<Stack.Screen name="Home" component={HomeScreen}/>
+					<Stack.Screen name="AddChildren" component={AddChildrenScreen}/>
+					<Stack.Screen name="Admin" component={AdminScreen}/>
+				</Stack.Navigator>
+			</NavigationContainer>
+		</PaperProvider>
 	</GestureHandlerRootView>
   );
 }

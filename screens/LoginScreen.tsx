@@ -70,7 +70,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                     style={{ width: 200, height: 160 }}
                     resizeMode="contain"
                 />
-                <Text style={{ fontSize: 24, fontWeight: "bold", marginTop: 16 }}>Create Account</Text>
+                <Text style={{ fontSize: 24, fontWeight: "bold", marginTop: 16 }}>Login</Text>
             </View>
 
             <TextInput

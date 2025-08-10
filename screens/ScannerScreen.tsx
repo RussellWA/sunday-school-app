@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { CameraView, Camera } from 'expo-camera';
-import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 
 const ScannerScreen: React.FC = () => {
@@ -16,6 +16,10 @@ const ScannerScreen: React.FC = () => {
   const [fullName, setFullName] = useState<string | null>(null); //name of child scanned
 
 
+  const sampleDate = new Date();
+  sampleDate.setHours(5, 0, 0, 0); // Set to 5:00 AM local time
+
+
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -23,13 +27,19 @@ const ScannerScreen: React.FC = () => {
     })();
   }, []);
 
-  const fetchChildByID = async (id: string) => {
+  type ChildData = {
+    id: string;
+    points?: number;
+    [key: string]: any;
+  };
+
+  const fetchChildByID = async (id: string): Promise<ChildData | null> => {
     try {
       const docRef = doc(db, "children", id);
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        return docSnap.data();
+        return { id: docRef.id, ...docSnap.data() } as ChildData; // include doc id for update
       } else {
         return null; // No such document
       }
@@ -40,44 +50,21 @@ const ScannerScreen: React.FC = () => {
   };
 
 const handleBarcodeScanned = async (event: { data: string; type: string }) => {
-    if (!scanned) {
-      setScanned(true);
-      setQrData(event.data);
+  if (!scanned) {
+    setScanned(true);
+    setQrData(event.data);
 
-      let parsedTime: string | null = null;
-      let parsedChildID: string | null = null;
-      let parsedFullName: string | null = null;
-      try {
-        const parsed = JSON.parse(event.data);
-        parsedTime = parsed.time ?? null;
-        parsedChildID = parsed.childId ?? null;
-        try {
-          const parsed = JSON.parse(event.data);
-          parsedChildID = parsed.childId ?? null;
-          setChildID(parsedChildID);
-
-          // Fetch child from Firestore
-          if (parsedChildID) {
-            const childData = await fetchChildByID(parsedChildID);
-            if (childData) {
-              // Do something with childData, e.g. display it
-              console.log("Matched child:", childData);
-            } else {
-              console.log("No child found with this ID.");
-            }
-          }
-        } catch {
-          setChildID(null);
-        }
-        parsedFullName = parsed.fullName ?? null;
-        setQrTime(parsedTime);
-        setChildID(parsedChildID);
-        setFullName(parsedFullName);
-      } catch {
-        setQrTime(null);
-        setChildID(null);
-        setFullName(null);
-      }
+    let parsedTime: string | null = null;
+    let parsedChildID: string | null = null;
+    let parsedFullName: string | null = null;
+    try {
+      const parsed = JSON.parse(event.data);
+      parsedTime = parsed.time ?? null;
+      parsedChildID = parsed.childId ?? null;
+      parsedFullName = parsed.fullName ?? null;
+      setQrTime(parsedTime);
+      setChildID(parsedChildID);
+      setFullName(parsedFullName);
 
       const now = new Date();
       const indoTime = now.toLocaleString("id-ID", {
@@ -92,33 +79,40 @@ const handleBarcodeScanned = async (event: { data: string; type: string }) => {
 
       // Compare times if both are available
       if (parsedTime) {
-        // Convert both times to Date objects for comparison
-        // Assume parsedTime is "HH:mm" or "HH AM/PM"
         let qrDate, scanDate;
         try {
-          // Use today's date for both
           const today = now.toISOString().split('T')[0];
-          // Try to parse "HH:mm" or "HH AM/PM"
-          // If "HH:mm"
           if (/^\d{2}:\d{2}$/.test(parsedTime)) {
             qrDate = new Date(`${today}T${parsedTime}:00`);
           } else {
-            // If "HH AM/PM"
             qrDate = new Date(`${today} ${parsedTime}`);
           }
-          // For scanDate, use the current time
           scanDate = now;
           if (qrDate < scanDate) {
             setTimingStatus("early");
+            if (parsedChildID) {
+              const childData = await fetchChildByID(parsedChildID);
+              if (childData) {
+                const newPoints = (childData.points ?? 0) + 5;
+                await updateDoc(doc(db, "children", parsedChildID), { points: newPoints });
+                console.log("Added 5 points for being early.");
+              }
+            }
           } else {
             setTimingStatus("late");
+            // If late, add 5 points
           }
         } catch {
           setTimingStatus(null);
         }
       }
+    } catch {
+      setQrTime(null);
+      setChildID(null);
+      setFullName(null);
     }
-  };
+  }
+};
 
   if (hasPermission === null) {
     return <Text>Requesting camera permission…</Text>;

@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { CameraView, Camera } from 'expo-camera';
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../firebaseConfig";
 
 const ScannerScreen: React.FC = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -10,6 +12,8 @@ const ScannerScreen: React.FC = () => {
   const [scanTime, setScanTime] = useState<string | null>(null); 
   const [qrTime, setQrTime] = useState<string | null>(null); //time of the qr scanned / class
   const [timingStatus, setTimingStatus] = useState<string | null>(null); //status of class
+  const [childID, setChildID] = useState<string | null>(null); //id of child scanned
+  const [fullName, setFullName] = useState<string | null>(null); //name of child scanned
 
 
   useEffect(() => {
@@ -19,18 +23,60 @@ const ScannerScreen: React.FC = () => {
     })();
   }, []);
 
-const handleBarcodeScanned = (event: { data: string; type: string }) => {
+  const fetchChildByID = async (id: string) => {
+    try {
+      const docRef = doc(db, "children", id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        return docSnap.data();
+      } else {
+        return null; // No such document
+      }
+    } catch (error) {
+      console.error("Error fetching child:", error);
+      return null;
+    }
+  };
+
+const handleBarcodeScanned = async (event: { data: string; type: string }) => {
     if (!scanned) {
       setScanned(true);
       setQrData(event.data);
 
       let parsedTime: string | null = null;
+      let parsedChildID: string | null = null;
+      let parsedFullName: string | null = null;
       try {
         const parsed = JSON.parse(event.data);
         parsedTime = parsed.time ?? null;
+        parsedChildID = parsed.childId ?? null;
+        try {
+          const parsed = JSON.parse(event.data);
+          parsedChildID = parsed.childId ?? null;
+          setChildID(parsedChildID);
+
+          // Fetch child from Firestore
+          if (parsedChildID) {
+            const childData = await fetchChildByID(parsedChildID);
+            if (childData) {
+              // Do something with childData, e.g. display it
+              console.log("Matched child:", childData);
+            } else {
+              console.log("No child found with this ID.");
+            }
+          }
+        } catch {
+          setChildID(null);
+        }
+        parsedFullName = parsed.fullName ?? null;
         setQrTime(parsedTime);
+        setChildID(parsedChildID);
+        setFullName(parsedFullName);
       } catch {
         setQrTime(null);
+        setChildID(null);
+        setFullName(null);
       }
 
       const now = new Date();
@@ -99,14 +145,15 @@ const handleBarcodeScanned = (event: { data: string; type: string }) => {
       <View style={styles.overlay}>
         {scanned ? (
           <>
-            <Text style={styles.text}>QR Data: {qrData}</Text>
             <Text style={styles.text}>Waktu Scan: {scanTime}</Text>
             <Text style={styles.text}>Time from QR: {qrTime ?? "N/A"}</Text>
+            <Text style={styles.text}>Child ID: {childID ?? "N/A"}</Text>
+            <Text style={styles.text}>Full Name: {fullName ?? "N/A"}</Text>
             <Text style={styles.text}>
               {timingStatus === "early" && "early"}
               {timingStatus === "late" && "late"}
             </Text>
-            <Text style={styles.text} onPress={() => { setScanned(false); setQrData(null); setScanTime(null); setQrTime(null); setTimingStatus(null); }}>
+            <Text style={styles.text} onPress={() => { setScanned(false); setQrData(null); setScanTime(null); setQrTime(null); setTimingStatus(null); setChildID(null); setFullName(null); }}>
               Tap to scan again
             </Text>
           </>

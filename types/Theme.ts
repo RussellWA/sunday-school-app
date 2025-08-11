@@ -14,6 +14,7 @@ export const theme = {
     onPrimary: '#FFFFFF',    // Text on primary
     onSecondary: '#FFFFFF',  // Text on secondary
     text: '#333333',         // General text
+    textWhite: '#FFFFFF',
     outline: '#D2E100',      // Lime
   },
 };

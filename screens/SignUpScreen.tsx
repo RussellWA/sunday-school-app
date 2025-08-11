@@ -49,7 +49,7 @@ const SignUpScreen: React.FC<Props> = ({ navigation }) => {
     return (
         <View style={{ flex: 1, justifyContent: "center", paddingHorizontal: 24, backgroundColor: "#fff" }}>
             <TouchableOpacity
-                onPress={() => navigation.goBack()}
+                onPress={() => navigation.replace("Welcome")}
                 style={{
                     position: "absolute",
                     top: 50,

@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Image, Platform, StatusBar, TouchableOpacity, View } from "react-native";
+import { Text, useTheme } from "react-native-paper";
 import { RootStackParamList } from "../App";
-import { Dimensions, Image, Platform, StatusBar, TouchableOpacity, View } from "react-native";
-import { Button, Text, useTheme } from "react-native-paper";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Welcome">;
 
@@ -10,21 +10,20 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
     const { colors } = useTheme();
     
     return (
-        <View style={{ alignItems: 'center', backgroundColor: "#fff" }}>
-            <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
+        <View style={{ flex: 1, alignItems: 'center', backgroundColor: "#fff" }}>
             <Image 
                 source={require("../assets/moreBnw.jpg")}
                 style={{
-                width: "100%",
-                height: 200,
+                    width: "100%",
+                    height: 200,
                 }}
                 resizeMode="cover"
             />
             <Image 
                 source={require("../assets/bnw.png")}
                 style={{
-                width: "100%",
-                height: 180,
+                    width: "100%",
+                    height: 180,
                 }}
                 resizeMode="cover"
             />

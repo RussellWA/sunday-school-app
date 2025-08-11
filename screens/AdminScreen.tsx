@@ -21,6 +21,13 @@ const AdminScreen: React.FC<Props> = ({ navigation }) => {
                     Admin Dashboard
                 </Text>
                 <Text>Manage your application settings and user accounts here.</Text>
+                <Button
+                    mode="contained"
+                    style={{ marginTop: 24 }}
+                    onPress={() => navigation.navigate("Scanner")}
+                >
+                    Open Camera
+                </Button>
             </View>
         </ScrollView>
     )

@@ -1,14 +1,15 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { ActivityIndicator, Button, Text } from "react-native-paper";
+import { ActivityIndicator, Text } from "react-native-paper";
 import { RootStackParamList } from "../App";
 import ExpandableCard from "../components/ExpandableCard";
-import useHomeHandler from "../handler/useHomeHandler";
-import { theme } from "../types/Theme";
-import { LinearGradient } from "expo-linear-gradient";
 import MainBackground from "../components/MainBackground";
+import YouTubeEmbed from "../components/YoutubeEmbed";
+import useHomeHandler from "../handler/useHomeHandler";
+import useYoutubeVideoHandler from "../handler/useYoutubeVideoHandler";
+import { theme } from "../types/Theme";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Home">;
 
@@ -21,10 +22,17 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         fetchChildren,
     } = useHomeHandler();
 
+    const { fetchLatestVideo, videoId } = useYoutubeVideoHandler();
+
     useEffect(() => {
         if (loading) return;
-        if (userInfo) fetchChildren();
-        else navigation.replace("Welcome");
+        if (userInfo) {
+            fetchChildren();
+            fetchLatestVideo();
+        } 
+        else {
+            navigation.replace("Welcome");
+        }
     }, [loading, userInfo]);
 
     if (!authChecked) {
@@ -47,24 +55,13 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
                 <Text style={{ marginBottom: 16, color: theme.colors.text }}>
                     Here you can manage your children's registrations and schedules.
                 </Text>
-                <View
-                    style={{
-                        width: '100%',
-                        height: 200,
-                        backgroundColor: '#ccc',
-                        borderRadius: 12,
-                        marginBottom: 20,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}
-                    >
-                    <Text style={{ color: '#666' }}>YouTube Video Placeholder</Text>
-                </View>
+
+                <YouTubeEmbed videoId={videoId} />
 
                 <Text style={{
                     fontSize: 18,
                     fontWeight: "bold",
-                    color: theme.colors.primary, // navy blue
+                    color: theme.colors.primary,
                     marginBottom: 8,
                 }}>
                     List of Children

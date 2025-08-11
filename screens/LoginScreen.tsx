@@ -41,7 +41,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     return (
         <View style={{ flex: 1, justifyContent: "center", padding: 20 }}>
             <TouchableOpacity
-                onPress={() => navigation.goBack()}
+                onPress={() => navigation.replace("Welcome")}
                 style={{
                     position: "absolute",
                     top: 50,
@@ -70,7 +70,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                     style={{ width: 200, height: 160 }}
                     resizeMode="contain"
                 />
-                <Text style={{ fontSize: 24, fontWeight: "bold", marginTop: 16 }}>Create Account</Text>
+                <Text style={{ fontSize: 24, fontWeight: "bold", marginTop: 16 }}>Login</Text>
             </View>
 
             <TextInput
